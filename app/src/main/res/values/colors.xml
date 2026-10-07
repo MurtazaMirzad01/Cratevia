@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bg_app">#F8FAFC</color>
+
+    <!-- Stock Status Colors -->
+    <color name="status_green_bg">#DCFCE7</color>
+    <color name="status_green_text">#15803D</color>
+
+    <color name="status_orange_bg">#FEF3C7</color>
+    <color name="status_orange_text">#B45309</color>
+
+    <color name="status_red_bg">#FEE2E2</color>
+    <color name="status_red_text">#B91C1C</color>
+</resources>

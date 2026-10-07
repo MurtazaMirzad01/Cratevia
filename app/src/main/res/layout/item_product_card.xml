@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product Name"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#0F172A" />
+
+            <TextView
+                android:id="@+id/textItemCategorySku"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category • SKU"
+                android:textSize="13sp"
+                android:textColor="#64748B"
+                android:layout_marginTop="2dp" />
+
+            <!-- Stock status pill badge -->
+            <TextView
+                android:id="@+id/textItemStockBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Qty: 25 in stock"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:background="@color/status_green_bg"
+                android:textColor="@color/status_green_text"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textItemPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$29.99"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#0F172A" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
