@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand Colors -->
+    <color name="primary">#071D48</color>
+    <color name="secondary">#00CFC0</color>
+    <color name="accent">#7BFFDC</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bg_app">#F8FAFC</color>
