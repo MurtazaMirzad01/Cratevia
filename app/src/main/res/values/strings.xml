@@ -24,8 +24,9 @@
     <!-- Product List Activity Strings -->
     <string name="title_product_list">Product Catalog</string>
     <string name="subtitle_product_list">Tap any product to view, edit, or delete</string>
-    <string name="btn_add_new_product">+ Add New Product</string>
-    <string name="label_no_products">No products found. Tap below to create your first product!</string>
+    <string name="hint_search_products">Search by name, SKU, or category...</string>
+    <string name="btn_add_new_product">+ Add Product</string>
+    <string name="label_no_products">No products found in inventory.</string>
 
     <!-- Add/Edit Product Activity Strings -->
     <string name="title_add_product">Add Product</string>

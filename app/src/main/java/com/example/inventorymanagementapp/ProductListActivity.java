@@ -2,98 +2,94 @@ package com.example.inventorymanagementapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Locale;
 
 public class ProductListActivity extends AppCompatActivity {
 
-    private LinearLayout containerProductList;
+    private RecyclerView recyclerViewProducts;
     private TextView textEmptyList;
+    private EditText editSearchQuery;
+
+    private ProductAdapter adapter;
+    private List<Product> allProducts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
-        containerProductList = findViewById(R.id.containerProductList);
+        recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
         textEmptyList = findViewById(R.id.textEmptyList);
+        editSearchQuery = findViewById(R.id.editSearchQuery);
         Button btnHeaderAddProduct = findViewById(R.id.btnHeaderAddProduct);
 
+        // Setup RecyclerView with LinearLayoutManager
+        recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
+
+        // Fetch products & initialize Adapter
+        allProducts = ProductRepository.getInstance().getAllProducts();
+        adapter = new ProductAdapter(this, allProducts, product -> {
+            // Click handler: Open ProductDetailActivity
+            Intent intent = new Intent(ProductListActivity.this, ProductDetailActivity.class);
+            intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, product.getId());
+            startActivity(intent);
+        });
+
+        recyclerViewProducts.setAdapter(adapter);
+
+        // Setup Add Product Button Click
         btnHeaderAddProduct.setOnClickListener(view -> {
             Intent intent = new Intent(ProductListActivity.this, AddProductActivity.class);
             startActivity(intent);
+        });
+
+        // Setup Live Search / Filter Listener
+        editSearchQuery.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.filter(s.toString(), allProducts);
+                checkEmptyState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        renderProductList();
+        refreshProductList();
     }
 
-    private void renderProductList() {
-        // Clear previous views from container
-        containerProductList.removeAllViews();
+    private void refreshProductList() {
+        allProducts = ProductRepository.getInstance().getAllProducts();
+        String currentQuery = editSearchQuery.getText().toString();
+        adapter.filter(currentQuery, allProducts);
+        checkEmptyState();
+    }
 
-        List<Product> products = ProductRepository.getInstance().getAllProducts();
-
-        if (products.isEmpty()) {
+    private void checkEmptyState() {
+        if (adapter.getItemCount() == 0) {
             textEmptyList.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        textEmptyList.setVisibility(View.GONE);
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (Product p : products) {
-            // Dynamically inflate item layout XML for each product
-            View cardView = inflater.inflate(R.layout.item_product_card, containerProductList, false);
-
-            TextView textName = cardView.findViewById(R.id.textItemName);
-            TextView textCatSku = cardView.findViewById(R.id.textItemCategorySku);
-            TextView textStockBadge = cardView.findViewById(R.id.textItemStockBadge);
-            TextView textPrice = cardView.findViewById(R.id.textItemPrice);
-
-            textName.setText(p.getName());
-            String catSku = p.getCategory() + " • SKU: " + p.getSku();
-            textCatSku.setText(catSku);
-
-            textPrice.setText(String.format(Locale.getDefault(), "$%.2f", p.getSellPrice()));
-
-            // Set stock badge color based on stock status
-            if (p.isOutOfStock()) {
-                textStockBadge.setText("Out of Stock (0)");
-                textStockBadge.setBackgroundColor(ContextCompat.getColor(this, R.color.status_red_bg));
-                textStockBadge.setTextColor(ContextCompat.getColor(this, R.color.status_red_text));
-            } else if (p.isLowStock()) {
-                textStockBadge.setText(String.format(Locale.getDefault(), "Low Stock (%d)", p.getQuantity()));
-                textStockBadge.setBackgroundColor(ContextCompat.getColor(this, R.color.status_orange_bg));
-                textStockBadge.setTextColor(ContextCompat.getColor(this, R.color.status_orange_text));
-            } else {
-                textStockBadge.setText(String.format(Locale.getDefault(), "Qty: %d in stock", p.getQuantity()));
-                textStockBadge.setBackgroundColor(ContextCompat.getColor(this, R.color.status_green_bg));
-                textStockBadge.setTextColor(ContextCompat.getColor(this, R.color.status_green_text));
-            }
-
-            // Click listener on item card to view details
-            cardView.setOnClickListener(view -> {
-                Intent intent = new Intent(ProductListActivity.this, ProductDetailActivity.class);
-                intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, p.getId());
-                startActivity(intent);
-            });
-
-            // Add inflated card to parent container
-            containerProductList.addView(cardView);
+            recyclerViewProducts.setVisibility(View.GONE);
+        } else {
+            textEmptyList.setVisibility(View.GONE);
+            recyclerViewProducts.setVisibility(View.VISIBLE);
         }
     }
 }
