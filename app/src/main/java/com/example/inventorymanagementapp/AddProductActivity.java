@@ -1,6 +1,7 @@
 package com.example.inventorymanagementapp;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,10 @@ public class AddProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // Bind Views
         textAddProductTitle = findViewById(R.id.textAddProductTitle);
         textAddProductSubtitle = findViewById(R.id.textAddProductSubtitle);
@@ -43,7 +48,11 @@ public class AddProductActivity extends AppCompatActivity {
         editProductBuyPrice = findViewById(R.id.editProductBuyPrice);
         editProductSellPrice = findViewById(R.id.editProductSellPrice);
         editProductDescription = findViewById(R.id.editProductDescription);
+        Button btnCancelProduct = findViewById(R.id.btnCancelProduct);
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
+
+        // Cancel button click handler
+        btnCancelProduct.setOnClickListener(view -> finish());
 
         // Check if editing an existing product
         String productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
@@ -55,13 +64,22 @@ public class AddProductActivity extends AppCompatActivity {
             }
         }
 
-        // Prefill name if coming from Stage 1 intent demo
+        // Prefill name if coming from intent extra
         String prefilledName = getIntent().getStringExtra("EXTRA_PREFILLED_NAME");
         if (!isEditMode && prefilledName != null && !prefilledName.isEmpty()) {
             editProductName.setText(prefilledName);
         }
 
         btnSaveProduct.setOnClickListener(view -> saveProduct());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void populateFormWithProduct(Product p) {

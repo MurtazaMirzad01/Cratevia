@@ -24,6 +24,16 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="12dp">
 
+            <Button
+                android:id="@+id/btnBackList"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_back"
+                android:textSize="15sp"
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -35,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_product_list"
-                    android:textSize="24sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="#1E293B" />
 
@@ -43,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/subtitle_product_list"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textColor="#64748B" />
             </LinearLayout>
 

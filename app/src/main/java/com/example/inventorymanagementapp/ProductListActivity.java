@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,16 +30,24 @@ public class ProductListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
         textEmptyList = findViewById(R.id.textEmptyList);
         editSearchQuery = findViewById(R.id.editSearchQuery);
+        Button btnBackList = findViewById(R.id.btnBackList);
         Button btnHeaderAddProduct = findViewById(R.id.btnHeaderAddProduct);
+
+        // Back button listener
+        btnBackList.setOnClickListener(view -> finish());
 
         // Setup RecyclerView with LinearLayoutManager
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
 
         // Fetch products & initialize Adapter
-        allProducts = ProductRepository.getInstance().getAllProducts();
+        allProducts = ProductRepository.getInstance(this).getAllProducts();
         adapter = new ProductAdapter(this, allProducts, product -> {
             // Click handler: Open ProductDetailActivity
             Intent intent = new Intent(ProductListActivity.this, ProductDetailActivity.class);
@@ -71,13 +80,22 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         refreshProductList();
     }
 
     private void refreshProductList() {
-        allProducts = ProductRepository.getInstance().getAllProducts();
+        allProducts = ProductRepository.getInstance(this).getAllProducts();
         String currentQuery = editSearchQuery.getText().toString();
         adapter.filter(currentQuery, allProducts);
         checkEmptyState();

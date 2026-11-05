@@ -197,10 +197,9 @@
             android:paddingVertical="12dp"
             android:layout_marginBottom="12dp" />
 
-        <!-- Add New Product Action Button -->
+        <!-- Add New Product Primary Action Button (Matches View Catalog style) -->
         <Button
             android:id="@+id/btnOpenAddProduct"
-            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_add_new_product"
