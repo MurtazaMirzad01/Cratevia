@@ -10,17 +10,6 @@
     <string name="stat_out_of_stock">Out of Stock</string>
     <string name="btn_view_catalog">View Product Catalog →</string>
 
-    <!-- Stage 1 Demos -->
-    <string name="section_input_toast">Quick Action &amp; Toast Demo</string>
-    <string name="hint_quick_note">Quick Note / Search Term</string>
-    <string name="btn_show_toast">Show Toast Message</string>
-    <string name="section_dialog">Dialog Demo</string>
-    <string name="desc_dialog">Display an AlertDialog summary of the system.</string>
-    <string name="btn_open_dialog">Open Summary Dialog</string>
-    <string name="section_intent">Intent Navigation</string>
-    <string name="desc_intent">Pass notes directly to the Add Product Screen.</string>
-    <string name="btn_open_add_product">Quick Add Product Screen →</string>
-
     <!-- Product List Activity Strings -->
     <string name="title_product_list">Product Catalog</string>
     <string name="subtitle_product_list">Tap any product to view, edit, or delete</string>
@@ -62,7 +51,7 @@
     <string name="delete_confirm_title">Delete Product?</string>
     <string name="delete_confirm_msg">Are you sure you want to delete \"%1$s\"? This action cannot be undone.</string>
 
-    <!-- Stage 5: Stock In / Stock Out Strings -->
+    <!-- Stock In / Stock Out Strings -->
     <string name="btn_stock_in">Stock In (+)</string>
     <string name="btn_stock_out">Stock Out (-)</string>
     <string name="title_stock_in">Stock In — Receive Inventory</string>
