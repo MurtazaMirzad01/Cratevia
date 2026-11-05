@@ -30,18 +30,10 @@ public class ProductListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
         textEmptyList = findViewById(R.id.textEmptyList);
         editSearchQuery = findViewById(R.id.editSearchQuery);
-        Button btnBackList = findViewById(R.id.btnBackList);
         Button btnHeaderAddProduct = findViewById(R.id.btnHeaderAddProduct);
-
-        // Back button listener
-        btnBackList.setOnClickListener(view -> finish());
 
         // Setup RecyclerView with LinearLayoutManager
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));

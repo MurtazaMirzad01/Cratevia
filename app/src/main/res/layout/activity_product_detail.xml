@@ -15,48 +15,24 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Top Navigation Row with Back Button -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Header Title & Category Badge -->
+        <TextView
+            android:id="@+id/textDetailName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:text="Product Name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#1E293B" />
 
-            <Button
-                android:id="@+id/btnBackDetail"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_back"
-                android:textSize="15sp"
-                android:paddingStart="0dp"
-                android:paddingEnd="8dp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textDetailName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Product Name"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#1E293B" />
-
-                <TextView
-                    android:id="@+id/textDetailCategorySku"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Category • SKU"
-                    android:textSize="13sp"
-                    android:textColor="#64748B" />
-            </LinearLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textDetailCategorySku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category • SKU"
+            android:textSize="13sp"
+            android:textColor="#64748B"
+            android:layout_marginBottom="16dp" />
 
         <!-- Stock Status Card with Stock In / Stock Out Buttons -->
         <com.google.android.material.card.MaterialCardView

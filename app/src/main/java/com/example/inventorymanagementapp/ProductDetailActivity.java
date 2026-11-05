@@ -40,10 +40,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         // Bind Views
         textDetailName = findViewById(R.id.textDetailName);
         textDetailCategorySku = findViewById(R.id.textDetailCategorySku);
@@ -55,15 +51,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         textDetailProfitMargin = findViewById(R.id.textDetailProfitMargin);
         textDetailDescription = findViewById(R.id.textDetailDescription);
 
-        Button btnBackDetail = findViewById(R.id.btnBackDetail);
         Button btnStockIn = findViewById(R.id.btnStockIn);
         Button btnStockOut = findViewById(R.id.btnStockOut);
         Button btnEditProduct = findViewById(R.id.btnEditProduct);
         Button btnDeleteProduct = findViewById(R.id.btnDeleteProduct);
-
-        if (btnBackDetail != null) {
-            btnBackDetail.setOnClickListener(view -> finish());
-        }
 
         productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
 
