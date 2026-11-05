@@ -17,14 +17,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView textOutOfStockVal;
 
     private EditText editQuickNote;
-    private Button btnViewCatalog;
-    private Button btnShowToast;
-    private Button btnOpenAddProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize Repository with Context on startup
+        ProductRepository.getInstance(this);
 
         // Bind Dashboard Metric Views
         textTotalProductsVal = findViewById(R.id.textTotalProductsVal);
@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Bind Action Views
         editQuickNote = findViewById(R.id.editQuickNote);
-        btnViewCatalog = findViewById(R.id.btnViewCatalog);
-        btnShowToast = findViewById(R.id.btnShowToast);
-        btnOpenAddProduct = findViewById(R.id.btnOpenAddProduct);
+        Button btnViewCatalog = findViewById(R.id.btnViewCatalog);
+        Button btnShowToast = findViewById(R.id.btnShowToast);
+        Button btnOpenAddProduct = findViewById(R.id.btnOpenAddProduct);
 
         // View Catalog Button Listener
         btnViewCatalog.setOnClickListener(view -> {
@@ -69,9 +69,9 @@ public class MainActivity extends AppCompatActivity {
         updateDashboardMetrics();
     }
 
-    // Refresh Dashboard metrics in real time whenever returning to MainActivity
+    // Refresh Dashboard metrics in real time from SQLite DB
     private void updateDashboardMetrics() {
-        ProductRepository repo = ProductRepository.getInstance();
+        ProductRepository repo = ProductRepository.getInstance(this);
 
         textTotalProductsVal.setText(String.valueOf(repo.getTotalProductTypesCount()));
         textTotalStockVal.setText(String.valueOf(repo.getTotalStockCount()));

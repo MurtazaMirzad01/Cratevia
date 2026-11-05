@@ -1,116 +1,120 @@
 package com.example.inventorymanagementapp;
 
-import java.util.ArrayList;
+import android.content.Context;
+
 import java.util.List;
 
 /**
- * ProductRepository (In-Memory Singleton)
- * Holds inventory products in memory before database persistence (Stage 4).
- * Provides CRUD operations (Create, Read, Update, Delete).
+ * ProductRepository
+ * Acts as the single source of truth for Inventory data.
+ * delegates database persistence to DatabaseHelper (SQLite).
  */
 public class ProductRepository {
 
     private static ProductRepository instance;
-    private final List<Product> productList;
+    private final DatabaseHelper dbHelper;
 
-    private ProductRepository() {
-        productList = new ArrayList<>();
-        seedSampleData();
+    private ProductRepository(Context context) {
+        dbHelper = DatabaseHelper.getInstance(context);
+        seedSampleDataIfEmpty();
     }
 
-    public static synchronized ProductRepository getInstance() {
+    public static synchronized ProductRepository getInstance(Context context) {
         if (instance == null) {
-            instance = new ProductRepository();
+            instance = new ProductRepository(context.getApplicationContext());
         }
         return instance;
     }
 
-    // Seed initial inventory items for practice and immediate UI feedback
-    private void seedSampleData() {
-        productList.add(new Product(
-                "Wireless Ergonomic Mouse",
-                "MSE-101",
-                "Electronics",
-                25,
-                15.00,
-                29.99,
-                10,
-                "Bluetooth & 2.4G wireless dual-mode mouse with ergonomic grip."
-        ));
+    // Overload for backward compatibility when instance is already initialized
+    public static synchronized ProductRepository getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("ProductRepository is not initialized. Call getInstance(context) first.");
+        }
+        return instance;
+    }
 
-        productList.add(new Product(
-                "Mechanical Gaming Keyboard",
-                "KBD-202",
-                "Electronics",
-                7, // Low Stock (7 < 10)
-                45.00,
-                79.99,
-                10,
-                "RGB mechanical keyboard with tactile blue switches."
-        ));
+    private void seedSampleDataIfEmpty() {
+        if (dbHelper.getProductCount() == 0) {
+            dbHelper.insertProduct(new Product(
+                    "Wireless Ergonomic Mouse",
+                    "MSE-101",
+                    "Electronics",
+                    25,
+                    15.00,
+                    29.99,
+                    10,
+                    "Bluetooth & 2.4G wireless dual-mode mouse with ergonomic grip."
+            ));
 
-        productList.add(new Product(
-                "USB-C Multiport Adapter",
-                "HUB-303",
-                "Accessories",
-                0, // Out of Stock (0)
-                12.50,
-                24.99,
-                5,
-                "7-in-1 USB-C hub with 4K HDMI, USB 3.0, and Power Delivery."
-        ));
+            dbHelper.insertProduct(new Product(
+                    "Mechanical Gaming Keyboard",
+                    "KBD-202",
+                    "Electronics",
+                    7, // Low Stock (7 < 10)
+                    45.00,
+                    79.99,
+                    10,
+                    "RGB mechanical keyboard with tactile blue switches."
+            ));
+
+            dbHelper.insertProduct(new Product(
+                    "USB-C Multiport Adapter",
+                    "HUB-303",
+                    "Accessories",
+                    0, // Out of Stock (0)
+                    12.50,
+                    24.99,
+                    5,
+                    "7-in-1 USB-C hub with 4K HDMI, USB 3.0, and Power Delivery."
+            ));
+        }
     }
 
     // CREATE
-    public void addProduct(Product product) {
-        productList.add(0, product); // Add to beginning of list
+    public boolean addProduct(Product product) {
+        return dbHelper.insertProduct(product);
     }
 
     // READ ALL
     public List<Product> getAllProducts() {
-        return new ArrayList<>(productList);
+        return dbHelper.getAllProducts();
     }
 
     // READ BY ID
     public Product getProductById(String id) {
-        for (Product p : productList) {
-            if (p.getId().equals(id)) {
-                return p;
-            }
-        }
-        return null;
+        return dbHelper.getProductById(id);
     }
 
     // UPDATE
     public boolean updateProduct(Product updatedProduct) {
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getId().equals(updatedProduct.getId())) {
-                productList.set(i, updatedProduct);
-                return true;
-            }
-        }
-        return false;
+        return dbHelper.updateProduct(updatedProduct);
+    }
+
+    // STOCK ADJUSTMENT (STOCK IN / STOCK OUT)
+    public boolean adjustStock(String id, int delta) {
+        Product p = getProductById(id);
+        if (p == null) return false;
+
+        int newQty = p.getQuantity() + delta;
+        if (newQty < 0) newQty = 0;
+
+        return dbHelper.updateStockQuantity(id, newQty);
     }
 
     // DELETE
     public boolean deleteProduct(String id) {
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getId().equals(id)) {
-                productList.remove(i);
-                return true;
-            }
-        }
-        return false;
+        return dbHelper.deleteProduct(id);
     }
 
-    // STATISTICS FOR DASHBOARD
+    // DASHBOARD STATS
     public int getTotalProductTypesCount() {
-        return productList.size();
+        return dbHelper.getProductCount();
     }
 
     public int getTotalStockCount() {
         int total = 0;
-        for (Product p : productList) {
+        for (Product p : getAllProducts()) {
             total += p.getQuantity();
         }
         return total;
@@ -118,7 +122,7 @@ public class ProductRepository {
 
     public int getLowStockCount() {
         int count = 0;
-        for (Product p : productList) {
+        for (Product p : getAllProducts()) {
             if (p.isLowStock()) {
                 count++;
             }
@@ -128,7 +132,7 @@ public class ProductRepository {
 
     public int getOutOfStockCount() {
         int count = 0;
-        for (Product p : productList) {
+        for (Product p : getAllProducts()) {
             if (p.isOutOfStock()) {
                 count++;
             }

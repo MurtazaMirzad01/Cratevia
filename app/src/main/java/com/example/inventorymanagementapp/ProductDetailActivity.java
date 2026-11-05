@@ -1,9 +1,11 @@
 package com.example.inventorymanagementapp;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +30,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView textDetailSellPrice;
     private TextView textDetailProfitMargin;
     private TextView textDetailDescription;
-    private Button btnEditProduct;
-    private Button btnDeleteProduct;
 
     private String productId;
     private Product currentProduct;
@@ -49,10 +49,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         textDetailSellPrice = findViewById(R.id.textDetailSellPrice);
         textDetailProfitMargin = findViewById(R.id.textDetailProfitMargin);
         textDetailDescription = findViewById(R.id.textDetailDescription);
-        btnEditProduct = findViewById(R.id.btnEditProduct);
-        btnDeleteProduct = findViewById(R.id.btnDeleteProduct);
+
+        Button btnStockIn = findViewById(R.id.btnStockIn);
+        Button btnStockOut = findViewById(R.id.btnStockOut);
+        Button btnEditProduct = findViewById(R.id.btnEditProduct);
+        Button btnDeleteProduct = findViewById(R.id.btnDeleteProduct);
 
         productId = getIntent().getStringExtra(EXTRA_PRODUCT_ID);
+
+        btnStockIn.setOnClickListener(view -> showStockAdjustmentDialog(true));
+        btnStockOut.setOnClickListener(view -> showStockAdjustmentDialog(false));
 
         btnEditProduct.setOnClickListener(view -> {
             if (currentProduct != null) {
@@ -77,7 +83,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             return;
         }
 
-        currentProduct = ProductRepository.getInstance().getProductById(productId);
+        currentProduct = ProductRepository.getInstance(this).getProductById(productId);
         if (currentProduct == null) {
             Toast.makeText(this, "Product not found or deleted", Toast.LENGTH_SHORT).show();
             finish();
@@ -124,6 +130,59 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void showStockAdjustmentDialog(boolean isStockIn) {
+        if (currentProduct == null) return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(isStockIn ? R.string.title_stock_in : R.string.title_stock_out);
+        builder.setMessage(isStockIn ? R.string.msg_stock_in : R.string.msg_stock_out);
+
+        // Programmatically create EditText inside Dialog
+        final EditText inputQty = new EditText(this);
+        inputQty.setInputType(InputType.TYPE_CLASS_NUMBER);
+        inputQty.setHint("Quantity");
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(40, 20, 40, 20);
+        inputQty.setLayoutParams(lp);
+
+        builder.setView(inputQty);
+
+        builder.setPositiveButton(isStockIn ? "Stock In (+)" : "Stock Out (-)", (dialog, which) -> {
+            String qtyStr = inputQty.getText().toString().trim();
+            if (qtyStr.isEmpty()) return;
+
+            try {
+                int qty = Integer.parseInt(qtyStr);
+                if (qty <= 0) {
+                    Toast.makeText(this, "Enter a valid positive number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!isStockIn && qty > currentProduct.getQuantity()) {
+                    Toast.makeText(this, "Cannot issue more stock than currently available (" + currentProduct.getQuantity() + ")", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                int delta = isStockIn ? qty : -qty;
+                boolean success = ProductRepository.getInstance(this).adjustStock(currentProduct.getId(), delta);
+
+                if (success) {
+                    String action = isStockIn ? "Added " + qty + " units to stock." : "Issued " + qty + " units from stock.";
+                    Toast.makeText(this, action, Toast.LENGTH_SHORT).show();
+                    loadProductDetails(); // Refresh UI
+                }
+
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Invalid number entered", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
     private void showDeleteConfirmationDialog() {
         if (currentProduct == null) return;
 
@@ -133,7 +192,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .setTitle(R.string.delete_confirm_title)
                 .setMessage(message)
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    ProductRepository.getInstance().deleteProduct(currentProduct.getId());
+                    ProductRepository.getInstance(this).deleteProduct(currentProduct.getId());
                     Toast.makeText(ProductDetailActivity.this, "Product deleted", Toast.LENGTH_SHORT).show();
                     finish();
                 })

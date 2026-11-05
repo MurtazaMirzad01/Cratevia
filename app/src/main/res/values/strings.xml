@@ -57,8 +57,16 @@
     <string name="status_in_stock">In Stock</string>
     <string name="status_low_stock">Low Stock Warning!</string>
     <string name="status_out_of_stock">Out of Stock!</string>
-    <string name="btn_edit">Edit Product</string>
+    <string name="btn_edit">Edit Details</string>
     <string name="btn_delete">Delete Product</string>
     <string name="delete_confirm_title">Delete Product?</string>
     <string name="delete_confirm_msg">Are you sure you want to delete \"%1$s\"? This action cannot be undone.</string>
+
+    <!-- Stage 5: Stock In / Stock Out Strings -->
+    <string name="btn_stock_in">Stock In (+)</string>
+    <string name="btn_stock_out">Stock Out (-)</string>
+    <string name="title_stock_in">Stock In — Receive Inventory</string>
+    <string name="title_stock_out">Stock Out — Issue Inventory</string>
+    <string name="msg_stock_in">Enter quantity to add to current stock:</string>
+    <string name="msg_stock_out">Enter quantity to subtract from stock:</string>
 </resources>
