@@ -16,7 +16,6 @@ public class ProductRepository {
 
     private ProductRepository(Context context) {
         dbHelper = DatabaseHelper.getInstance(context);
-        seedSampleDataIfEmpty();
     }
 
     public static synchronized ProductRepository getInstance(Context context) {
@@ -32,43 +31,6 @@ public class ProductRepository {
             throw new IllegalStateException("ProductRepository is not initialized. Call getInstance(context) first.");
         }
         return instance;
-    }
-
-    private void seedSampleDataIfEmpty() {
-        if (dbHelper.getProductCount() == 0) {
-            dbHelper.insertProduct(new Product(
-                    "Wireless Ergonomic Mouse",
-                    "MSE-101",
-                    "Electronics",
-                    25,
-                    15.00,
-                    29.99,
-                    10,
-                    "Bluetooth & 2.4G wireless dual-mode mouse with ergonomic grip."
-            ));
-
-            dbHelper.insertProduct(new Product(
-                    "Mechanical Gaming Keyboard",
-                    "KBD-202",
-                    "Electronics",
-                    7, // Low Stock (7 < 10)
-                    45.00,
-                    79.99,
-                    10,
-                    "RGB mechanical keyboard with tactile blue switches."
-            ));
-
-            dbHelper.insertProduct(new Product(
-                    "USB-C Multiport Adapter",
-                    "HUB-303",
-                    "Accessories",
-                    0, // Out of Stock (0)
-                    12.50,
-                    24.99,
-                    5,
-                    "7-in-1 USB-C hub with 4K HDMI, USB 3.0, and Power Delivery."
-            ));
-        }
     }
 
     // CREATE
